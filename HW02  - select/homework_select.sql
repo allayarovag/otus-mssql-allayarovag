@@ -35,13 +35,14 @@ where a.StockItemName like '%urgent%' or a.StockItemName like 'Animal%'
 По каким колонкам делать JOIN подумайте самостоятельно.
 */
 
+select distinct a.SupplierID, a.SupplierName 
+from  Purchasing.Suppliers as a 
+except
 select 
-a.SupplierID, a.SupplierName
+distinct a.SupplierID, a.SupplierName
 from Purchasing.Suppliers as a 
 left join Purchasing.PurchaseOrders as b on b.SupplierID = a.SupplierID
-group by a.SupplierID, a.SupplierName
-having count(b.SupplierID) = 0
-
+where b.PurchaseOrderID is not null
 
 /*
 3. Заказы (Orders) с ценой товара (UnitPrice) более 100$ 
@@ -78,7 +79,7 @@ from sales.Orders as a
 join sales.OrderLines as b on b.OrderID = a.OrderID
 join sales.Customers as c on c.CustomerID = a.CustomerID
 where (b.UnitPrice > 100 or b.Quantity > 20) and b.PickingCompletedWhen is not null
-order by 4,5,2
+order by [Квартал],[Треть],[Дата]
 offset 1000 rows fetch first 100 rows only
 
 /*
