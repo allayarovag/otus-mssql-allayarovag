@@ -48,10 +48,23 @@ where UnitPrice = (select min(UnitPrice) from Warehouse.StockItems)
 ѕредставьте несколько способов (в том числе с CTE). 
 */
 
-select top 5 TransactionAmount,a.CustomerID,CustomerName 
+select top 5 
+a.CustomerID
+,CustomerName
+--,c.CityName
 from sales.CustomerTransactions as a 
 join sales.Customers as b on b.CustomerID = a.CustomerID
-order by 1 desc
+--join Application.Cities as c on c.CityID = b.DeliveryCityID
+order by a.TransactionAmount desc
+
+;with aCte as (
+select top 5 a.CustomerID from sales.CustomerTransactions as a 
+order by a.TransactionAmount desc
+)
+select 
+b.CustomerID
+,CustomerName from sales.Customers as b
+join aCte as a on a.CustomerID = b.CustomerID
 
 /*
 4. ¬ыберите города (ид и название), в которые были доставлены товары, 
