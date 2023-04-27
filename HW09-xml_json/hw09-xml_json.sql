@@ -132,8 +132,50 @@ EXEC sp_xml_removedocument @docHandle;
 /*
 2. Выгрузить данные из таблицы StockItems в такой же xml-файл, как StockItems.xml
 */
+/*
+ <Item Name="&quot;The Gu&quot; red shirt XML tag t-shirt (Black) 3XXL">
+    <SupplierID>4</SupplierID>
+    <Package>
+      <UnitPackageID>7</UnitPackageID>
+      <OuterPackageID>6</OuterPackageID>
+      <QuantityPerOuter>12</QuantityPerOuter>
+      <TypicalWeightPerUnit>0.400</TypicalWeightPerUnit>
+    </Package>
+    <LeadTimeDays>7</LeadTimeDays>
+    <IsChillerStock>0</IsChillerStock>
+    <TaxRate>20.000</TaxRate>
+    <UnitPrice>18.000000</UnitPrice>
+*/
 
-exec master..xp_cmdshell 'bcp "select * from [WideWorldImporters].Warehouse.StockItems FOR XML PATH" queryout  "D:\bcp-out\bulc_demo.xml" -T -c -t -S LEGION\SQL2022'
+SELECT
+	a.StockItemName		as [@Name],
+	SupplierID			as [SupplierID],
+	UnitPackageID		as [Package/UnitPackageID],
+	OuterPackageID		as [Package/OuterPackageID],
+	QuantityPerOuter	as [Package/QuantityPerOuter],
+	TypicalWeightPerUnit as [Package/TypicalWeightPerUnit],
+	LeadTimeDays		as [LeadTimeDays],
+	IsChillerStock		as [IsChillerStock],
+	TaxRate				as [TaxRate],
+	UnitPrice			as [UnitPrice]
+FROM WideWorldImporters.Warehouse.StockItems as a 
+FOR XML PATH('Item'), ROOT('StockItems')
+
+exec master..xp_cmdshell 'bcp "SELECT
+	a.StockItemName		as [@Name],
+	SupplierID			as [SupplierID],
+	UnitPackageID		as [Package/UnitPackageID],
+	OuterPackageID		as [Package/OuterPackageID],
+	QuantityPerOuter	as [Package/QuantityPerOuter],
+	TypicalWeightPerUnit as [Package/TypicalWeightPerUnit],
+	LeadTimeDays		as [LeadTimeDays],
+	IsChillerStock		as [IsChillerStock],
+	TaxRate				as [TaxRate],
+	UnitPrice			as [UnitPrice]
+FROM WideWorldImporters.Warehouse.StockItems as a 
+FOR XML PATH(''Item''), ROOT(''StockItems'')" queryout  "D:\bcp-out\bulc_demo1.xml" -T -c -t -S LEGION\SQL2022'
+
+--exec master..xp_cmdshell 'bcp "select * from [WideWorldImporters].Warehouse.StockItems FOR XML PATH" queryout  "D:\bcp-out\bulc_demo.xml" -T -c -t -S LEGION\SQL2022'
 
 /*
 3. В таблице Warehouse.StockItems в колонке CustomFields есть данные в JSON.
