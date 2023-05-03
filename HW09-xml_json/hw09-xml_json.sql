@@ -161,19 +161,8 @@ SELECT
 FROM WideWorldImporters.Warehouse.StockItems as a 
 FOR XML PATH('Item'), ROOT('StockItems')
 
-exec master..xp_cmdshell 'bcp "SELECT
-	a.StockItemName		as [@Name],
-	SupplierID			as [SupplierID],
-	UnitPackageID		as [Package/UnitPackageID],
-	OuterPackageID		as [Package/OuterPackageID],
-	QuantityPerOuter	as [Package/QuantityPerOuter],
-	TypicalWeightPerUnit as [Package/TypicalWeightPerUnit],
-	LeadTimeDays		as [LeadTimeDays],
-	IsChillerStock		as [IsChillerStock],
-	TaxRate				as [TaxRate],
-	UnitPrice			as [UnitPrice]
-FROM WideWorldImporters.Warehouse.StockItems as a 
-FOR XML PATH(''Item''), ROOT(''StockItems'')" queryout  "D:\bcp-out\bulc_demo1.xml" -T -c -t -S LEGION\SQL2022'
+declare @cmd varchar(4000) = 'bcp "SELECT a.StockItemName	as [@Name],	SupplierID	as [SupplierID],	UnitPackageID		as [Package/UnitPackageID],	OuterPackageID		as [Package/OuterPackageID],	QuantityPerOuter	as [Package/QuantityPerOuter],	TypicalWeightPerUnit as [Package/TypicalWeightPerUnit],	LeadTimeDays		as [LeadTimeDays],	IsChillerStock		as [IsChillerStock],	TaxRate				as [TaxRate],	UnitPrice			as [UnitPrice] FROM [WideWorldImporters].[Warehouse].[StockItems] as a  FOR XML PATH(''Item''), ROOT(''StockItems'')" queryout  "D:\bcp-out\bulc_demo1.xml" -x -T  -w -S LEGION\SQL2022'
+exec master..xp_cmdshell  @cmd
 
 --exec master..xp_cmdshell 'bcp "select * from [WideWorldImporters].Warehouse.StockItems FOR XML PATH" queryout  "D:\bcp-out\bulc_demo.xml" -T -c -t -S LEGION\SQL2022'
 
