@@ -60,4 +60,3 @@ where
 ActionDate >= @ActionDate_Start 
 and a.ActionDate < @ActionDate_End
 and a.StockItem_id = @StockItem_id 
-
