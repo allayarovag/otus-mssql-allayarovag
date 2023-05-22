@@ -143,15 +143,18 @@ BEGIN
 	@EndDate = a.item.value('@EndDate','DATE')
 	FROM @xml.nodes('/RequestMessage/row') as a(item);
 
-	insert into dbo.ReportCustomersOrders(CustomerID, OrderCOUNTS, StartDate,EndDate)
-	select
-	@CustomerID, 
-	COUNT(distinct a.OrderID), 
-	@StartDate, @EndDate
-	from	Sales.Invoices as a
-	where	a.CustomerID = @CustomerID
-			and a.InvoiceDate between @StartDate and @EndDate
-	
+	if @CustomerID is not null
+	begin
+		insert into dbo.ReportCustomersOrders(CustomerID, OrderCOUNTS, StartDate,EndDate)
+		select
+		@CustomerID, 
+		COUNT(distinct a.OrderID), 
+		@StartDate, @EndDate
+		from	Sales.Invoices as a
+		where	a.CustomerID = @CustomerID
+				and a.InvoiceDate between @StartDate and @EndDate
+	end
+
 	SELECT @Message AS ReceivedRequestMessage, @MessageType as MessageType; 
 	
 	-- Confirm and Send a reply
